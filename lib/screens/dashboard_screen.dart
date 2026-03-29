@@ -238,7 +238,7 @@ class _RecentTasks extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: tasks.length,
-                  separatorBuilder: (_, __) => const Divider(),
+                  separatorBuilder: (context, index) => const Divider(),
                   itemBuilder: (context, index) {
                     final task = tasks[index];
                     return ListTile(
@@ -296,7 +296,7 @@ class _RecentNotes extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: notes.length,
-                  separatorBuilder: (_, __) => const Divider(),
+                  separatorBuilder: (context, index) => const Divider(),
                   itemBuilder: (context, index) {
                     final note = notes[index];
                     return ListTile(

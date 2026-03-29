@@ -30,8 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadData() async {
-    await context.read<TaskProvider>().loadData();
-    await context.read<NoteProvider>().loadData();
+    final taskProvider = context.read<TaskProvider>();
+    final noteProvider = context.read<NoteProvider>();
+    await taskProvider.loadData();
+    await noteProvider.loadData();
   }
 
   @override

@@ -94,7 +94,6 @@ class WeatherScreen extends StatelessWidget {
                   itemCount: weather.getHourlyForecast().length,
                   itemBuilder: (context, index) {
                     final hourly = weather.getHourlyForecast()[index];
-                    final hourInfo = weather.getWeatherInfo(hourly['code'] as int? ?? 0);
                     return Container(
                       width: 70,
                       margin: const EdgeInsets.only(right: 8),
