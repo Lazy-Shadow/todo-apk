@@ -96,33 +96,34 @@ class Sidebar extends StatelessWidget {
               ],
             ),
           ),
-          Consumer<TaskProvider>(
-            builder: (context, taskProvider, _) => Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: Colors.grey.shade200),
+          if (currentTab == 'todos' || currentTab == 'notes')
+            Consumer<TaskProvider>(
+              builder: (context, taskProvider, _) => Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(color: Colors.grey.shade200),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Overview',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _StatRow(label: 'Total', value: taskProvider.totalCount, color: Colors.blue),
+                    _StatRow(label: 'Active', value: taskProvider.activeCount, color: Colors.orange),
+                    _StatRow(label: 'Completed', value: taskProvider.completedCount, color: Colors.green),
+                  ],
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Overview',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  _StatRow(label: 'Total', value: taskProvider.totalCount, color: Colors.blue),
-                  _StatRow(label: 'Active', value: taskProvider.activeCount, color: Colors.orange),
-                  _StatRow(label: 'Completed', value: taskProvider.completedCount, color: Colors.green),
-                ],
-              ),
             ),
-          ),
         ],
       ),
     );

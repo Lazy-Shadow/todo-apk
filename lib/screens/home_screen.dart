@@ -71,11 +71,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddModal,
-        backgroundColor: Colors.purple,
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+      floatingActionButton: (_currentTab == 'todos' || _currentTab == 'notes')
+          ? FloatingActionButton(
+              onPressed: _showAddModal,
+              backgroundColor: Colors.purple,
+              child: const Icon(Icons.add, color: Colors.white),
+            )
+          : null,
     );
   }
 
