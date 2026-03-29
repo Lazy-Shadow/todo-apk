@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import '../providers/weather_provider.dart';
 
 class MapsScreen extends StatefulWidget {
   const MapsScreen({super.key});
 
   @override
-  State<MapsScreen> createState() => _MapsScreenState();
+  State<MapsScreen> createState() => MapsScreenState();
 }
 
-class _MapsScreenState extends State<MapsScreen> {
+class MapsScreenState extends State<MapsScreen> {
   final TextEditingController _searchController = TextEditingController();
-  final MapController _mapController = MapController();
+  WebViewController? _webViewController;
   LatLng? _currentLocation;
 
   @override
@@ -29,6 +29,35 @@ class _MapsScreenState extends State<MapsScreen> {
       setState(() {
         _currentLocation = LatLng(weather.lat!, weather.lon!);
       });
+      _initGoogleMaps();
+    }
+  }
+
+  String _buildGoogleMapsUrl(String query) {
+    final encodedQuery = Uri.encodeComponent(query);
+    return 'https://maps.google.com/maps?q=$encodedQuery&hl=en&z=15&output=embed';
+  }
+
+  void _initGoogleMaps() {
+    _webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.white)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) {},
+          onWebResourceError: (WebResourceError error) {},
+        ),
+      );
+    if (_currentLocation != null) {
+      _loadGoogleMaps('${_currentLocation!.latitude},${_currentLocation!.longitude}');
+    }
+  }
+
+  void _loadGoogleMaps(String query) {
+    if (_webViewController != null) {
+      final url = _buildGoogleMapsUrl(query);
+      _webViewController!.loadRequest(Uri.parse(url));
     }
   }
 
@@ -36,6 +65,19 @@ class _MapsScreenState extends State<MapsScreen> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _getCurrentLocation() async {
+    final weather = Provider.of<WeatherProvider>(context, listen: false);
+    await weather.refreshLocation();
+    if (weather.lat != null && weather.lon != null) {
+      setState(() {
+        _currentLocation = LatLng(weather.lat!, weather.lon!);
+      });
+      if (_webViewController != null) {
+        _loadGoogleMaps('${_currentLocation!.latitude},${_currentLocation!.longitude}');
+      }
+    }
   }
 
   @override
@@ -55,6 +97,11 @@ class _MapsScreenState extends State<MapsScreen> {
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                   ),
+                  onSubmitted: (value) {
+                    if (value.isNotEmpty) {
+                      _loadGoogleMaps(value);
+                    }
+                  },
                 ),
               ),
               const SizedBox(width: 8),
@@ -78,7 +125,7 @@ class _MapsScreenState extends State<MapsScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.map, size: 64, color: Colors.grey.shade300),
+                      const CircularProgressIndicator(),
                       const SizedBox(height: 16),
                       Text(
                         'Detecting your location...',
@@ -87,59 +134,11 @@ class _MapsScreenState extends State<MapsScreen> {
                     ],
                   ),
                 )
-              : FlutterMap(
-                  mapController: _mapController,
-                  options: MapOptions(
-                    initialCenter: _currentLocation!,
-                    initialZoom: 13,
-                  ),
-                  children: [
-                    TileLayer(
-                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'com.todoapp.todo_apk',
-                    ),
-                    MarkerLayer(
-                      markers: [
-                        Marker(
-                          point: _currentLocation!,
-                          width: 40,
-                          height: 40,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.purple,
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 3),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.2),
-                                  blurRadius: 8,
-                                ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.location_on,
-                              color: Colors.white,
-                              size: 24,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              : _webViewController == null
+                  ? const Center(child: CircularProgressIndicator())
+                  : WebViewWidget(controller: _webViewController!),
         ),
       ],
     );
-  }
-
-  void _getCurrentLocation() async {
-    final weather = Provider.of<WeatherProvider>(context, listen: false);
-    await weather.refreshLocation();
-    if (weather.lat != null && weather.lon != null) {
-      setState(() {
-        _currentLocation = LatLng(weather.lat!, weather.lon!);
-      });
-      _mapController.move(_currentLocation!, 13);
-    }
   }
 }

@@ -83,6 +83,24 @@ class WeatherScreen extends StatelessWidget {
                   )),
                 ],
               ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(child: _WeatherDetail(
+                    icon: Icons.wb_sunny,
+                    label: 'UV Index',
+                    value: '${current['uvIndex'] ?? '0.0'}',
+                    color: Colors.amber,
+                  )),
+                  const SizedBox(width: 12),
+                  Expanded(child: _WeatherDetail(
+                    icon: Icons.grain,
+                    label: 'Precipitation',
+                    value: '${current['precipitation'] ?? '0'}%',
+                    color: Colors.teal,
+                  )),
+                ],
+              ),
               const SizedBox(height: 24),
               // Hourly Forecast
               const Text('Hourly Forecast', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),

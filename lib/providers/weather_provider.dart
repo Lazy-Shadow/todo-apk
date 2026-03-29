@@ -100,6 +100,7 @@ class WeatherProvider extends ChangeNotifier {
       'humidity': current['relative_humidity_2m']?.toString() ?? '--',
       'wind': current['wind_speed_10m']?.toString() ?? '--',
       'uvIndex': current['uv_index']?.toString() ?? '0.0',
+      'precipitation': current['precipitation']?.toString() ?? '0',
       'code': current['weather_code'] ?? 0,
     };
   }
