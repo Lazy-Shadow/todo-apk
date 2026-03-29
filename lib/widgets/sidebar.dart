@@ -34,10 +34,9 @@ class Sidebar extends StatelessWidget {
                   width: 40,
                   height: 30,
                   decoration: BoxDecoration(
-                    color: Colors.purple.shade100,
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: const Icon(Icons.check_box, color: Colors.purple, size: 20),
+                  child: Image.asset('assets/favicon.jpg', fit: BoxFit.cover),
                 ),
                 const SizedBox(width: 12),
                 const Text(
@@ -96,7 +95,7 @@ class Sidebar extends StatelessWidget {
               ],
             ),
           ),
-          if (currentTab == 'todos' || currentTab == 'notes')
+          if (currentTab == 'todos')
             Consumer<TaskProvider>(
               builder: (context, taskProvider, _) => Container(
                 padding: const EdgeInsets.all(16),
