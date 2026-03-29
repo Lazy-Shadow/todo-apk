@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -51,5 +53,3 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: todo-v${{ steps.version.outputs.VERSION }}.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
