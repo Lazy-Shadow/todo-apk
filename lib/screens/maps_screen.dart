@@ -35,8 +35,7 @@ class MapsScreenState extends State<MapsScreen> {
 
   String _buildGoogleMapsUrl(String query) {
     final encodedQuery = Uri.encodeComponent(query);
-    const apiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
-    return 'https://www.google.com/maps/embed/v1/place?key=$apiKey&q=$encodedQuery&zoom=15';
+    return 'https://maps.google.com/maps?q=$encodedQuery&hl=en&z=15&output=embed';
   }
 
   void _initGoogleMaps() {
